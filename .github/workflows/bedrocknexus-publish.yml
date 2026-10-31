@@ -39,24 +39,18 @@ jobs:
       - name: Check PHP syntax
         run: find src -name '*.php' -print0 | xargs -0 -n1 php -l
 
-      - name: Install Composer dependencies
-        if: hashFiles('composer.json') != ''
-        run: composer install --no-dev --no-interaction --no-progress --prefer-dist
-
-      - name: Build Phar
-        id: pharynx
-        uses: SOF3/pharynx@v0.2
-        with:
-          pharynx-version: "0.3.8"
-          composer: ${{ hashFiles('composer.json') != '' }}
-          stage-poggit: "false"
-
-      - name: Name the plugin file
+      - name: Download Pharynx
         env:
-          OUTPUT_PHAR: ${{ steps.pharynx.outputs.output-phar }}
+          PHARYNX_URL: https://github.com/BedrockNexus/pharynx/releases/download/0.4.0-bedrocknexus.1/pharynx.phar
+          PHARYNX_SHA256: f72d7566db0fe0197e2fefff0b88798b52758066f678a3c2d6e934dad277b79a
         run: |
-          mkdir dist
-          cp "$OUTPUT_PHAR" "dist/NKCosmetics.phar"
+          curl -fsSL -o "$RUNNER_TEMP/pharynx.phar" "$PHARYNX_URL"
+          echo "$PHARYNX_SHA256  $RUNNER_TEMP/pharynx.phar" | sha256sum -c -
+
+      # With a composer.json, Pharynx runs composer install and bundles the
+      # dependencies under the plugin's namespace, leaving out the server.
+      - name: Build Phar
+        run: php "$RUNNER_TEMP/pharynx.phar" -i . -p="dist/NKCosmetics.phar"
 
       - name: Upload plugin for BedrockNexus
         uses: actions/upload-artifact@v4
