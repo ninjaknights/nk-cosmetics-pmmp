@@ -3,6 +3,10 @@
 # Particle effects are built into NKCosmetics. New effects cannot be added here; you can rename,
 # disable, re-permission or unlock the built-in ones for everyone.
 # Run /nkcosmetics reload after editing.
+# Equip a style with /cosmetics equip <id>, for example /cosmetics equip vortex.
+# The move style emits only while moving. Vortex uses flames; other shapes use coloured dust.
+# Shapes play while still and become small trails while moving. Move emits only while moving.
+# A low global budget draws parts of larger shapes over successive frames.
 
 settings:
   enabled: true
@@ -15,16 +19,43 @@ settings:
 
 # Options for each effect: enabled, name, permission (default nkcosmetics.particle.<id>),
 # default-unlocked. See pets.yml.
+# Only Vortex and Twins are enabled while the remaining styles await visual testing.
 particles:
-  heart_aura:
+  vortex:
     enabled: true
-  emerald_halo:
+  twins:
     enabled: true
-  enchant_spiral:
-    enabled: true
-  flame_trail:
-    enabled: true
-  rainbow_trail:
-    enabled: true
-  snow_trail:
-    enabled: true
+  thick:
+    enabled: false
+  spiral:
+    enabled: false
+  spin:
+    enabled: false
+  sphere:
+    enabled: false
+  rings:
+    enabled: false
+  quadhelix:
+    enabled: false
+  pulse:
+    enabled: false
+  popper:
+    enabled: false
+  orbit:
+    enabled: false
+  normal:
+    enabled: false
+  move:
+    enabled: false
+  halo:
+    enabled: false
+  feet:
+    enabled: false
+  cube:
+    enabled: false
+  companion:
+    enabled: false
+  celebration:
+    enabled: false
+  beam:
+    enabled: false

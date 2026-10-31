@@ -14,7 +14,7 @@ use pocketmine\world\Position;
 
 /** Small bounded emissions with explicit recipients; no world-wide particle broadcast. */
 final class ParticleRenderer implements CosmeticRendererInterface{
-	/** @var array<int, array{owner: Player, type: ParticleType, previous: Position, due: int}> */
+	/** @var array<int, array{owner: Player, type: ParticleType, previous: Position, due: int, idleSince: ?int, movingUntil: int}> */
 	private array $shown = [];
 	private int $cursor = 0;
 
@@ -32,7 +32,7 @@ final class ParticleRenderer implements CosmeticRendererInterface{
 		$this->hide($player);
 		$type = ParticleType::tryFrom($definition->id);
 		if($type !== null){
-			$this->shown[spl_object_id($player)] = ["owner" => $player, "type" => $type, "previous" => $player->getPosition(), "due" => 0];
+			$this->shown[spl_object_id($player)] = ["owner" => $player, "type" => $type, "previous" => $player->getPosition(), "due" => 0, "idleSince" => null, "movingUntil" => 0];
 		}
 	}
 
@@ -54,13 +54,14 @@ final class ParticleRenderer implements CosmeticRendererInterface{
 		}
 		$budget = $this->settings->getCategoryInt(CosmeticCategory::PARTICLE, "max-effects-per-tick", 40, 1, 1000);
 		$rangeSquared = $this->settings->getCategoryInt(CosmeticCategory::PARTICLE, "view-distance", 24, 1, 128) ** 2;
-		$interval = max(1, (int) round(4.0 / $this->settings->getCategoryFloat(CosmeticCategory::PARTICLE, "frequency", 1.0, 0.1, 2.0)));
+		$frequency = $this->settings->getCategoryFloat(CosmeticCategory::PARTICLE, "frequency", 1.0, 0.1, 2.0);
 		//Resume after the last serviced owner so a low budget cannot starve later players.
 		$start = $this->cursor % $count;
 		for($i = 0; $i < $count && $budget > 0; ++$i){
 			$index = ($start + $i) % $count;
 			$id = $ids[$index];
 			$state = $this->shown[$id];
+			$interval = $state["type"]->getUpdateInterval($frequency);
 			$owner = $state["owner"];
 			if(!$owner->isConnected()){
 				unset($this->shown[$id]);
@@ -73,6 +74,23 @@ final class ParticleRenderer implements CosmeticRendererInterface{
 			$world = $owner->getWorld();
 			$sameWorld = $state["previous"]->world === $world;
 			$distance = $sameWorld ? $position->distanceSquared($state["previous"]) : 0.0;
+			$moving = $distance > 0.0025 && $distance < 100.0;
+			$animationTick = $tick;
+			if(!$state["type"]->isTrail()){
+				if(!$sameWorld || $distance >= 100.0){
+					$state["movingUntil"] = 0;
+					$state["idleSince"] = $tick;
+				}elseif($distance > 0.0001){
+					//Recognize slow walking, and bridge short gaps between movement packets.
+					$state["movingUntil"] = $tick + max(4, $interval + 1);
+					$state["idleSince"] = null;
+				}
+				$moving = $tick < $state["movingUntil"];
+				if(!$moving){
+					$state["idleSince"] ??= $tick;
+					$animationTick = $tick - $state["idleSince"];
+				}
+			}
 			$state["previous"] = $position;
 			$state["due"] = $tick + $interval;
 			$this->shown[$id] = $state;
@@ -89,7 +107,11 @@ final class ParticleRenderer implements CosmeticRendererInterface{
 			if($viewers === []){
 				continue;
 			}
-			foreach($state["type"]->samples($tick, $distance > 0.0025 && $distance < 100.0) as [$offset, $particle]){
+			$samples = $state["type"]->samples($animationTick, $moving);
+			$sampleCount = count($samples);
+			for($sample = 0; $sample < $sampleCount; ++$sample){
+				//A restricted budget draws different parts of the shape on successive frames.
+				[$offset, $particle] = $samples[($sample + intdiv($tick, $interval)) % $sampleCount];
 				$world->addParticle($position->addVector($offset), $particle, $viewers);
 				if(--$budget === 0){
 					break;

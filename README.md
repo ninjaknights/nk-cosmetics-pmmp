@@ -280,7 +280,7 @@ Configure these in `cosmetics/pets.yml`, `particles.yml` and `gadgets.yml`. Each
 
 | Pets | Particles | Gadgets (default cooldown) |
 | --- | --- | --- |
-| `mini_wolf`, `mini_cat`, `mini_fox`, `mini_panda`, `mini_pig`, `mini_chicken`, `mini_rabbit`, `mini_axolotl`, `mini_bee`, `mini_parrot` | `heart_aura`, `emerald_halo`, `enchant_spiral`, `flame_trail`, `rainbow_trail`, `snow_trail` | `confetti_cannon` (5s), `bubble_wand` (3s), `starburst` (5s), `flower_shower` (4s) |
+| `mini_wolf`, `mini_cat`, `mini_fox`, `mini_panda`, `mini_pig`, `mini_chicken`, `mini_rabbit`, `mini_axolotl`, `mini_bee`, `mini_parrot` | 19 styles listed below | `confetti_cannon` (5s), `bubble_wand` (3s), `starburst` (5s), `flower_shower` (4s) |
 
 **Pets** follow their owner over terrain (bees and parrots fly), and sit or wander nearby when the
 owner stands still. They cannot be hit, pushed or interacted with, and are never saved with the
@@ -288,6 +288,29 @@ world.
 
 **Particles** are only sent to players within `view-distance`, with a global per-tick budget
 (`max-effects-per-tick`) so busy servers stay smooth.
+
+Only **Vortex** and **Twins** are enabled by default. The other 17 styles remain disabled
+until their animations have been visually tested and corrected.
+
+Built-in particle styles:
+
+```text
+vortex, twins, thick, spiral, spin, sphere, rings, quadhelix, pulse, popper,
+orbit, normal, move, halo, feet, cube, companion, celebration, beam
+```
+
+These use original geometric patterns rendered with coloured Bedrock dust particles, except
+`vortex`, whose four flame emitters slowly spiral upwards and inwards over a 7.2-second cycle.
+Vortex updates every tick at the default frequency for smooth motion.
+Twins uses two opposite, rainbow-coloured particles orbiting the player while moving up and
+down together at a steady pace. An orbit takes three seconds and a full rise/fall takes six;
+it updates every tick at the default frequency.
+All shapes play their full animation while standing still and switch to a small trail
+of the same particle type while moving. After a brief settling delay, the idle animation restarts.
+Equip one with `/cosmetics equip vortex` (or another ID), and configure it under `particles:` in
+`cosmetics/particles.yml`. `move` only emits while moving. Larger shapes share the global budget;
+restricted budgets draw different parts over successive frames. No extra resource pack is needed
+for these particle styles.
 
 <a id="gadgets"></a>
 **Gadgets** place a tool in the configured `hotbar-slot` (default 8, the ninth slot) only if that
@@ -416,7 +439,7 @@ src/ninjaknights/cosmetics/
 ├── skin/           skin adapter and composed-skin management
 └── storage/        storage interface and SQLite backend
 resources/          default config.yml, cosmetics/*.yml and fallback skin geometry
-resource-pack/      sample resource pack (crown, wings, staff, balloon)
+resources/resource-pack/  sample resource pack (crown, wings, staff, balloon)
 ```
 
 ## License
