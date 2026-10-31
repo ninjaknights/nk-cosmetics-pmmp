@@ -1,0 +1,28 @@
+# NKCosmetics - gadgets
+#
+# Gadgets are built into NKCosmetics and are purely visual: no damage, movement or other
+# gameplay effects. New gadgets cannot be added here; you can rename, disable, re-permission,
+# unlock or change the cooldown of the built-in ones. Run /nkcosmetics reload after editing.
+
+settings:
+  enabled: true
+  # Empty hotbar slot (0-8) that receives the gadget tool. An occupied slot is never
+  # overwritten; players can then use /cosmetics use instead.
+  hotbar-slot: 8
+
+# Options for each gadget: enabled, name, permission (default nkcosmetics.gadget.<id>),
+# default-unlocked (see pets.yml), and:
+#   cooldown-seconds: 1 - 300
+gadgets:
+  confetti_cannon:
+    enabled: true
+    cooldown-seconds: 5
+  bubble_wand:
+    enabled: true
+    cooldown-seconds: 3
+  starburst:
+    enabled: true
+    cooldown-seconds: 5
+  flower_shower:
+    enabled: true
+    cooldown-seconds: 4

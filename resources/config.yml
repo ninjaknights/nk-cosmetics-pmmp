@@ -1,0 +1,48 @@
+# NKCosmetics configuration (global settings).
+#
+# Each cosmetic type has its own file in the cosmetics/ folder next to this one:
+#   hats.yml, back.yml, offhand.yml, balloons.yml  - type settings and your custom cosmetics
+#   pets.yml, particles.yml, gadgets.yml           - type settings and the built-in catalog
+config-version: 2
+
+storage:
+  # SQLite database file inside the plugin data folder.
+  sqlite-file: cosmetics.db
+  # How often changed player data is written to disk (it is also saved on quit and shutdown).
+  autosave-seconds: 60
+
+resource-pack:
+  # Folder holding the cosmetics resource pack source, relative to the plugin data folder.
+  # It is created from the bundled sample pack on first start. Put your models and textures here.
+  source: resource-pack
+  # Package the source folder as an .mcpack on startup and add it to the server's pack stack.
+  # The pack version is bumped automatically whenever its content changes so clients re-download it.
+  auto-register: true
+  # Require players to accept resource packs to join. Balloons are invisible without the pack.
+  # Hats, back and offhand cosmetics are sent inside the skin and do not need the pack on clients.
+  force: false
+
+skins:
+  # Keep persona (Character Creator) skins instead of replacing them with a random colour.
+  # Required for cosmetics to look right on persona skins. Disable only if another plugin
+  # replaces the server's skin adapter.
+  preserve-persona: true
+  # Also accept classic skins larger than 128x128 (the server rejects them otherwise).
+  accept-large-classic-skins: true
+  # How a persona skin with cosmetics is sent to clients:
+  #   classic: send it as a classic custom skin carrying the persona's own geometry and texture
+  #            plus the cosmetics (recommended - verified on Bedrock 1.26.60)
+  #   persona: keep the persona flag and piece list. Clients then rebuild the skin from the
+  #            persona pieces and ignore the added cosmetics, so they will not be visible.
+  composed-skin-type: classic
+  # Largest skin texture NKCosmetics may create when there is no free space in a skin (px).
+  max-texture-size: 512
+  # Ticks to wait before rebuilding a skin, so several changes at once cause a single update.
+  update-delay-ticks: 2
+
+# Worlds where all cosmetics are hidden and gadgets cannot be used.
+disabled-worlds: []
+
+menu:
+  # Cosmetics listed per page in the /cosmetics menu.
+  page-size: 8

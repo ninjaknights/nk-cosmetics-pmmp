@@ -1,0 +1,45 @@
+{
+	"name": "ninjaknights/nk-cosmetics",
+	"description": "YAML-driven, resource-pack-powered cosmetics engine for PocketMine-MP 5 and Axolotl-PM",
+	"type": "project",
+	"license": "GPL-3.0-only",
+	"authors": [
+		{
+			"name": "NinjaKnights"
+		}
+	],
+	"require": {
+		"php": "^8.1",
+		"ext-gd": "*",
+		"ext-sqlite3": "*",
+		"ext-zip": "*",
+		"dktapps/pmforms": "^2.3"
+	},
+	"require-dev": {
+		"axolotl-pm/pocketmine-mp": "^5.44",
+		"phpstan/phpstan": "^2.1",
+		"phpstan/phpstan-strict-rules": "^2.0",
+		"phpunit/phpunit": "^10.5 || ^11.0"
+	},
+	"autoload": {
+		"psr-4": {
+			"ninjaknights\\cosmetics\\": "src/ninjaknights/cosmetics"
+		}
+	},
+	"autoload-dev": {
+		"psr-4": {
+			"ninjaknights\\cosmetics\\tests\\": "tests/unit"
+		}
+	},
+	"config": {
+		"sort-packages": true,
+		"allow-plugins": {
+			"phpstan/extension-installer": false
+		}
+	},
+	"scripts": {
+		"analyse": "phpstan analyse --memory-limit=1G",
+		"test": "phpunit",
+		"build": "php -dphar.readonly=0 build/build.php"
+	}
+}

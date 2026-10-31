@@ -1,0 +1,24 @@
+{
+	"format_version": "1.10.0",
+	"minecraft:client_entity": {
+		"description": {
+			"identifier": "nkcosmetics:red_balloon",
+			"materials": {
+				"default": "entity_alphatest"
+			},
+			"textures": {
+				"default": "textures/nkcosmetics/balloons/red_balloon"
+			},
+			"geometry": {
+				"default": "geometry.nk.red_balloon"
+			},
+			"animations": {
+				"float": "animation.nk.balloon.float"
+			},
+			"scripts": {
+				"animate": ["float"]
+			},
+			"render_controllers": ["controller.render.default"]
+		}
+	}
+}

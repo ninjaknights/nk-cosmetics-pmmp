@@ -1,0 +1,36 @@
+# Dependencies and generated distributions.
+/vendor/
+/out/
+*.phar
+*.mcpack
+
+# Local development directories.
+/tools/
+/build/
+/tests/
+/composer.lock
+/phpstan.neon
+/phpunit.xml
+
+# Test, analysis and coverage output.
+/.phpunit.cache/
+/.phpstan.cache/
+/coverage/
+/.phpunit.result.cache
+
+# Local secrets and runtime data.
+.env
+.env.*
+!.env.example
+*.log
+*.sqlite
+*.sqlite3
+*.db
+*-wal
+*-shm
+
+# Editor and OS files.
+/.idea/
+/.vscode/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,28 @@
+# NKCosmetics - offhand cosmetics
+#
+# Offhand cosmetics are attached to the player's skin on the leftitem bone inside the left arm,
+# so they swing with it. They are purely visual: the real offhand slot is never touched.
+#
+# After editing, run /nkcosmetics reload. Changes apply immediately without a restart.
+
+settings:
+  enabled: true
+  # Persona skins have no baked offhand piece, so there is normally nothing to replace.
+  replace-slot: false
+  # Hide the offhand cosmetic while the player holds a real item in the offhand.
+  hide-with-offhand-item: true
+
+# Options: name, geometry, texture (required); description, permission
+# (default nkcosmetics.offhand.<id>), rarity, enabled, unlock, offset, replace-slot, strip-bones,
+# hide-with-offhand-item. See hats.yml for what each option does.
+#   slim-offset: [x, y, z]  extra move for slim-armed skins when a skin has no leftitem bone and
+#                           the model is attached to the arm itself (default [-0.5, 0, 0])
+cosmetics:
+  magic_staff:
+    name: "Magic Staff"
+    description: "A wooden staff topped with a glowing orb. Purely decorative."
+    geometry: "geometry.nk.magic_staff"
+    texture: "textures/nkcosmetics/offhand/magic_staff"
+    permission: "nkcosmetics.offhand.magic_staff"
+    rarity: rare
+    enabled: true

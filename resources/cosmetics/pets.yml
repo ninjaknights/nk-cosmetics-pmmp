@@ -1,0 +1,40 @@
+# NKCosmetics - pets
+#
+# Pets are built into NKCosmetics (baby vanilla mobs, no resource pack needed). New pets cannot
+# be added here; you can rename, disable, re-permission or unlock the built-in ones for everyone.
+# Removing an entry keeps its defaults. Run /nkcosmetics reload after editing.
+
+settings:
+  enabled: true
+  # Players further away than this (blocks) do not receive the pet.
+  view-distance: 48
+  # How often pets move (ticks). Ground pets follow over blocks; flying pets hover.
+  # When you stop, pets sit or wander nearby.
+  update-interval-ticks: 2
+
+# Options for each pet:
+#   enabled: false             hide it everywhere
+#   name: "..."                display name
+#   permission: ...            permission that unlocks it (default nkcosmetics.pet.<id>)
+#   default-unlocked: true     everyone owns it
+pets:
+  mini_wolf:
+    enabled: true
+  mini_cat:
+    enabled: true
+  mini_fox:
+    enabled: true
+  mini_panda:
+    enabled: true
+  mini_pig:
+    enabled: true
+  mini_chicken:
+    enabled: true
+  mini_rabbit:
+    enabled: true
+  mini_axolotl:
+    enabled: true
+  mini_bee:
+    enabled: true
+  mini_parrot:
+    enabled: true

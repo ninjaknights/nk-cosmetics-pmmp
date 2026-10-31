@@ -1,0 +1,36 @@
+name: NKCosmetics
+main: ninjaknights\cosmetics\Main
+version: 0.1.0
+api: 5.0.0
+author: NinjaKnights
+website: https://github.com/NinjaKnights/nk-cosmetics-pmmp
+description: YAML-driven, resource-pack-powered cosmetics for Bedrock - hats, back items, offhand items, balloons, pets, particles and gadgets.
+
+permissions:
+  nkcosmetics.command.cosmetics:
+    description: Use /cosmetics
+    default: true
+  nkcosmetics.command.admin:
+    description: Use /nkcosmetics
+    default: op
+  nkcosmetics.admin.give:
+    description: Grant cosmetics with /nkcosmetics give
+    default: op
+  nkcosmetics.admin.remove:
+    description: Revoke cosmetics with /nkcosmetics remove
+    default: op
+  nkcosmetics.admin.clear:
+    description: Unequip a player's cosmetics with /nkcosmetics clear
+    default: op
+  nkcosmetics.admin.list:
+    description: List cosmetics with /nkcosmetics list
+    default: op
+  nkcosmetics.admin.reload:
+    description: Reload configuration with /nkcosmetics reload
+    default: op
+  nkcosmetics.admin.debug:
+    description: Dump a player's composed skin with /nkcosmetics debug
+    default: op
+  nkcosmetics.all:
+    description: Use every cosmetic, regardless of unlocks
+    default: op

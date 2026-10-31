@@ -1,0 +1,35 @@
+# NKCosmetics - balloons
+#
+# Balloons are entities the client draws from the cosmetics resource pack, so each balloon needs
+# a client entity file in resource-pack/entity/ (identifier nkcosmetics:<id> by default) next to
+# its model, texture and optional animation. Players who decline the resource pack see nothing.
+#
+# New balloons need a server restart and players must rejoin to download the updated pack;
+# changing the options of an existing balloon only needs /nkcosmetics reload.
+
+settings:
+  enabled: true
+  # Players further away than this (blocks) do not receive the balloon entity.
+  view-distance: 48
+  # How often balloons move towards their owner (ticks). Higher is cheaper but less smooth.
+  update-interval-ticks: 2
+
+# Options: name, geometry, texture (required); description, permission
+# (default nkcosmetics.balloon.<id>), rarity, enabled, unlock. See hats.yml for those.
+#   entity: nkcosmetics:<id>  client entity identifier
+#   animation: animation id   checked against the pack (the entity file decides what plays)
+#   height: 2.4               blocks above the player's feet (0.5 - 6)
+#   distance: 1.2             how far it trails behind (0.3 - 4)
+#   offset: [x, y, z]         extra offset in blocks: right, up, forward
+#   scale: 1.0                (0.1 - 4)
+#   tether: true              draw a lead from the player to the balloon
+cosmetics:
+  red_balloon:
+    name: "Red Balloon"
+    description: "A shiny red balloon on a lead."
+    geometry: "geometry.nk.red_balloon"
+    texture: "textures/nkcosmetics/balloons/red_balloon"
+    animation: "animation.nk.balloon.float"
+    permission: "nkcosmetics.balloon.red_balloon"
+    rarity: uncommon
+    enabled: true

@@ -1,0 +1,42 @@
+# NKCosmetics - hats
+#
+# Hats are attached to the player's skin on the helmet bone, so they follow head rotation.
+# Models are built in player model space (feet at y=0, head from y=24 to y=32) and live in the
+# cosmetics resource pack (plugin_data/NKCosmetics/resource-pack by default).
+#
+# After editing, run /nkcosmetics reload. Hats are sent inside player skins, so new or changed
+# hats apply immediately without a restart.
+
+settings:
+  # Disabling the category hides it from the menu and unequips hats.
+  enabled: true
+  # Remove what a persona skin already wears in the helmet slot (hair, headwear, face
+  # accessories) before adding the hat. Each hat can override this with replace-slot.
+  replace-slot: true
+  # Hide the hat while the player wears a real helmet. Each hat can override this.
+  hide-with-helmet: true
+
+# Options for each hat:
+#   name:        display name                                   (required)
+#   geometry:    model identifier in the resource pack           (required)
+#   texture:     PNG path in the resource pack, without .png     (required, at most 128x128)
+#   description: text shown in the menu
+#   permission:  permission that unlocks it (default nkcosmetics.hat.<id>)
+#   rarity:      common | uncommon | rare | epic | legendary | mythic
+#   enabled:     false hides it everywhere
+#   unlock:
+#     default: true      everyone owns it
+#     permission: false  the permission does not unlock it (only /nkcosmetics give or the API)
+#   offset: [x, y, z]        move the model, in pixels
+#   replace-slot: true|false overrides the setting above
+#   strip-bones: [hat]       also hide these skin bones (e.g. a classic skin's hat layer)
+#   hide-with-helmet: true|false
+cosmetics:
+  royal_crown:
+    name: "Royal Crown"
+    description: "A golden crown set with a ruby and a sapphire."
+    geometry: "geometry.nk.royal_crown"
+    texture: "textures/nkcosmetics/hats/royal_crown"
+    permission: "nkcosmetics.hat.royal_crown"
+    rarity: legendary
+    enabled: true

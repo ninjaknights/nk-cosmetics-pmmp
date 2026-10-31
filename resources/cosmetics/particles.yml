@@ -1,0 +1,30 @@
+# NKCosmetics - particle effects
+#
+# Particle effects are built into NKCosmetics. New effects cannot be added here; you can rename,
+# disable, re-permission or unlock the built-in ones for everyone.
+# Run /nkcosmetics reload after editing.
+
+settings:
+  enabled: true
+  # Particles are only sent to players within this distance (blocks).
+  view-distance: 24
+  # Multiplier for how often effects play (0.1 - 2.0).
+  frequency: 1.0
+  # Upper bound on particles emitted per tick across all players.
+  max-effects-per-tick: 40
+
+# Options for each effect: enabled, name, permission (default nkcosmetics.particle.<id>),
+# default-unlocked. See pets.yml.
+particles:
+  heart_aura:
+    enabled: true
+  emerald_halo:
+    enabled: true
+  enchant_spiral:
+    enabled: true
+  flame_trail:
+    enabled: true
+  rainbow_trail:
+    enabled: true
+  snow_trail:
+    enabled: true

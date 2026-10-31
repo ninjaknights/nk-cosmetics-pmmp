@@ -1,0 +1,21 @@
+{
+	"format_version": 2,
+	"header": {
+		"name": "NKCosmetics",
+		"description": "Models and textures for NKCosmetics hats, back items, offhand items and balloons",
+		"uuid": "7335c257-3883-4aa9-9312-d0d00949b894",
+		"version": [1, 0, 0],
+		"min_engine_version": [1, 21, 0]
+	},
+	"modules": [
+		{
+			"type": "resources",
+			"uuid": "abfb0017-63eb-4d0c-891c-a21b0345f314",
+			"version": [1, 0, 0]
+		}
+	],
+	"metadata": {
+		"authors": ["NinjaKnights"],
+		"license": "GPL-3.0-only"
+	}
+}

@@ -1,0 +1,27 @@
+# NKCosmetics - back accessories (wings, backpacks, capes...)
+#
+# Back accessories are attached to the player's skin on the bodyarmor bone, behind the body.
+# Models are built in player model space (feet at y=0, body from y=12 to y=24, back face at z=2).
+# Skin geometry cannot be animated, so back accessories are static.
+#
+# After editing, run /nkcosmetics reload. Changes apply immediately without a restart.
+
+settings:
+  enabled: true
+  # Replace the persona back item (wings, backpacks) with the equipped back accessory.
+  replace-slot: true
+  # Hide the back accessory while the player wears an elytra.
+  hide-with-elytra: true
+
+# Options: name, geometry, texture (required); description, permission
+# (default nkcosmetics.back.<id>), rarity, enabled, unlock, offset, replace-slot, strip-bones,
+# hide-with-elytra. See hats.yml for what each option does.
+cosmetics:
+  angel_wings:
+    name: "Angel Wings"
+    description: "Feathered wings that sit on your back."
+    geometry: "geometry.nk.angel_wings"
+    texture: "textures/nkcosmetics/back/angel_wings"
+    permission: "nkcosmetics.back.angel_wings"
+    rarity: epic
+    enabled: true
