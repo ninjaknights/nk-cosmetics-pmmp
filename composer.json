@@ -36,10 +36,5 @@
 		"allow-plugins": {
 			"phpstan/extension-installer": false
 		}
-	},
-	"scripts": {
-		"analyse": "phpstan analyse --memory-limit=1G",
-		"test": "phpunit",
-		"build": "php -dphar.readonly=0 build/build.php"
 	}
 }

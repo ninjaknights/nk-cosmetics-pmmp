@@ -393,10 +393,8 @@ All events are in `ninjaknights\cosmetics\event` and are cancellable. Each carri
 composer install          # dependencies, including Axolotl-PM for static analysis
 ```
 
-Release PHARs are built and published through BedrockNexus. The local build script, tests and
-PHPStan/PHPUnit configuration (`build/`, `tests/`, `phpstan.neon`, `phpunit.xml`) are kept out of
-the repository, so the `composer test`, `composer analyse` and `composer build` scripts only work
-in a checkout that has them.
+Release PHARs are built and published through BedrockNexus. The build script, tests and
+PHPStan/PHPUnit configuration are not part of this repository.
 
 Source layout:
 
