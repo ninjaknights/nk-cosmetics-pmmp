@@ -30,19 +30,20 @@ jobs:
         with:
           persist-credentials: false
 
-      - name: Set up PHP for PocketMine-MP 5
-        uses: pmmp/setup-php-action@3.2.0
+      - name: Set up PHP for Axolotl-PM 5
+        uses: axolotl-pm/setup-php-action@b8c3f9add4f2ad4a5e2624a1112aba899ee8db0e # 1.0.0
         with:
-          php-version: "8.2"
+          php-version: "8.4"
           install-path: "../bin"
+          pm-version-major: "5"
 
       - name: Check PHP syntax
         run: find src -name '*.php' -print0 | xargs -0 -n1 php -l
 
       - name: Download Pharynx
         env:
-          PHARYNX_URL: https://github.com/BedrockNexus/pharynx/releases/download/0.4.0-bedrocknexus.1/pharynx.phar
-          PHARYNX_SHA256: f72d7566db0fe0197e2fefff0b88798b52758066f678a3c2d6e934dad277b79a
+          PHARYNX_URL: https://github.com/BedrockNexus/pharynx/releases/download/0.4.1-bedrocknexus.1/pharynx.phar
+          PHARYNX_SHA256: db60e4e308ff4f60c212c08aab17019bc15967634b19103097b6381543748605
         run: |
           curl -fsSL -o "$RUNNER_TEMP/pharynx.phar" "$PHARYNX_URL"
           echo "$PHARYNX_SHA256  $RUNNER_TEMP/pharynx.phar" | sha256sum -c -
