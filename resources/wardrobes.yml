@@ -1,0 +1,12 @@
+# Wardrobe zones: walking into one freezes the player on the zone's stand, with a fixed camera
+# aimed at them. Punching opens the cosmetics menu; sneaking leaves.
+#
+# Set zones up in game (see the README); commands save straight away and keep these comments:
+#   /nkcosmetics wardrobe add <name>
+#   /nkcosmetics wardrobe setstand|setcamera|setexit <name>   stand on the spot
+#   /nkcosmetics wardrobe pos1|pos2 <name>                    opposite corners of the entrance area
+#   /nkcosmetics wardrobe enable <name>
+#
+# Manual edits need /nkcosmetics reload. Locations are [x, y, z, yaw, pitch].
+enabled: true
+zones: {}

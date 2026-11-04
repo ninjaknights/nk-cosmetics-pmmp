@@ -28,6 +28,7 @@ tool, see [Gadgets](#gadgets)), have no collision and deal no damage.
 - [Installation](#installation)
 - [Commands](#commands)
 - [Permissions and unlocking](#permissions-and-unlocking)
+- [Wardrobe zones](#wardrobe-zones)
 - [Configuration](#configuration)
 - [Adding your own cosmetics](#adding-your-own-cosmetics)
 - [The resource pack](#the-resource-pack)
@@ -83,16 +84,39 @@ balloons; hats, back and offhand cosmetics work without it.
 | `/nkcosmetics clear <player>` | Unequip everything (works for offline players) | `nkcosmetics.admin.clear` |
 | `/nkcosmetics reload` | Reload `config.yml`, the `cosmetics/` files and the resource pack | `nkcosmetics.admin.reload` |
 | `/nkcosmetics debug <player>` | Write a player's original and composed skin to `plugin_data/NKCosmetics/debug/` | `nkcosmetics.admin.debug` |
+| `/nkcosmetics wardrobe` | Set up and manage [wardrobe zones](#wardrobe-zones) | `nkcosmetics.admin.wardrobe` |
 
 Category names are `hat`, `back`, `offhand`, `balloon`, `pet`, `particle` and `gadget`.
 `/nkcosmetics` (alias `/nkc`) needs `nkcosmetics.command.admin` plus the subcommand's permission.
 All admin permissions default to operators. `give`, `remove` and `clear` also work for players who
 are offline but have joined before.
 
-The menu shows each category with what is equipped and how many cosmetics are unlocked, then a
-paginated list showing name, rarity, and whether each cosmetic is equipped, unlocked or locked
-(with the permission that unlocks it). A settings page lets players hide their own cosmetics or
-stop seeing other players' cosmetics.
+`/cosmetics` opens the catalog: a tab for each category above a scrolling four-column grid of cards.
+
+- **Tap an owned card** to equip it, and tap it again to unequip it.
+- **Tap a locked card** to see its rarity, description and how to unlock it.
+- **Card markers** show an **Equipped** badge on what you're wearing and a lock on locked cards.
+- **Unequip all** removes everything, including pets, balloons, particles and gadgets.
+- **Settings** has the options to hide your own or other players' cosmetics.
+
+Each page holds 40 cards, and page buttons appear at the end of the grid only when a category has
+more. Forms reopen after each change, so equipping isn't instant, and the server checks access and
+world restrictions again on every tap.
+
+The grid is drawn by the bundled resource pack, because regular forms can only show a list. Players
+must accept the pack to see it. Set `menu.layout: classic` to use regular forms instead. Other
+plugins' forms and the settings form keep the vanilla layout: the catalog only applies to the exact
+titles `NK Cosmetics` and `NK Cosmetics Preview`.
+
+Set `menu.player-preview: true` to show a live model of the player beside the grid. It is off by
+default because [wardrobe zones](#wardrobe-zones) already show one.
+
+For an existing installation, copy `resources/resource-pack/ui/`,
+`resources/resource-pack/textures/nkcosmetics/ui/`, `resources/resource-pack/textures/nkcosmetics/icons/`
+and `resources/resource-pack/manifest.json` into the same paths under
+`plugin_data/NKCosmetics/resource-pack/`, and delete `ui/nk_wardrobe.json` there. Existing editable
+pack folders are preserved on upgrade, so these files are not installed automatically. Stop the
+server before replacing active pack files, restart it, and rejoin to download the changed pack.
 
 ## Permissions and unlocking
 
@@ -107,6 +131,61 @@ A player can use a cosmetic if **any** of these is true:
 with your permission plugin, or grant unlocks with `/nkcosmetics give` from rank, crate or reward
 plugins. If a player loses access (permission removed, unlock revoked, cosmetic disabled or
 deleted) the cosmetic is unequipped automatically.
+
+## Wardrobe zones
+
+A wardrobe zone is a place players walk into to try on cosmetics. When they enter:
+
+1. The screen fades to black and they move to the zone's **stand** location, frozen in place and
+   turned to face the camera.
+2. Their view locks to the zone's **camera** location, aimed at them, and the HUD is hidden. Looking
+   around turns their character while the camera stays still.
+3. **Punching** opens the same cosmetics menu as `/cosmetics`, and whatever they equip shows on them.
+4. **Sneaking** fades out and returns them to the **exit** location.
+
+Other players cannot see them, or their balloon, pet and particles, while they are inside, so
+several people can use one zone at once. Gadgets are paused during the visit and come back
+afterwards. Players cannot be hurt, break blocks or use items inside. Players who are not visiting
+can still walk into the shot, so build the room away from busy paths.
+
+### Setting up a zone
+
+Build the room first. Then, in game, stand on each spot:
+
+| Step | Command | Where to stand |
+| --- | --- | --- |
+| 1 | `/nkc wardrobe add lobby` | Anywhere in the zone's world |
+| 2 | `/nkc wardrobe setstand lobby` | Where players should stand during a visit |
+| 3 | `/nkc wardrobe setcamera lobby` | Where the camera should be; a few blocks from the stand fits the whole player in |
+| 4 | `/nkc wardrobe setexit lobby` | Where players go when they leave, facing the way they should face; keep it outside the entrance area |
+| 5 | `/nkc wardrobe pos1 lobby` | One corner of the entrance area, such as the doorway |
+| 6 | `/nkc wardrobe pos2 lobby` | The opposite corner, covering the full height |
+| 7 | `/nkc wardrobe enable lobby` | Anywhere |
+
+The camera always aims at the stand, and players always face the camera, so the way you face only
+matters for the exit. Each step saves immediately and tells you what is still needed. Corners use the block at your feet, and both corner blocks are
+included.
+
+| Command | Action |
+| --- | --- |
+| `/nkc wardrobe list` | Show zones and whether they are enabled, disabled or unfinished |
+| `/nkc wardrobe info lobby` | Show a zone's locations |
+| `/nkc wardrobe disable lobby` | Stop a zone reacting, keeping its setup |
+| `/nkc wardrobe remove lobby` | Delete a zone |
+
+Setup needs `nkcosmetics.command.admin` and `nkcosmetics.admin.wardrobe` (operators by default).
+Entering needs the normal `nkcosmetics.command.cosmetics` permission, and `disabled-worlds` still
+apply. Changing a zone or running `/nkcosmetics reload` sends anyone inside back out first.
+
+### Behaviour and settings
+
+Zones are stored in `plugin_data/NKCosmetics/wardrobes.yml`. Set `enabled: false` there to turn off
+all zones. Manual edits need `/nkcosmetics reload`. Invalid zones are logged and skipped; a malformed file
+disables all zones until fixed, and is never overwritten.
+
+Players must walk in to enter: joining inside a zone, or reloading while standing in one, waits
+until they leave and come back. Quitting, dying or being teleported by another plugin also ends a
+visit and restores the player. Quitting returns them to the exit location.
 
 ## Configuration
 
@@ -125,7 +204,9 @@ deleted) the cosmetic is unequipped automatically.
 | `skins.max-texture-size` | `512` | Largest skin texture NKCosmetics may create when a skin has no free space |
 | `skins.update-delay-ticks` | `2` | Ticks to batch changes before rebuilding a skin |
 | `disabled-worlds` | `[]` | Worlds where all cosmetics are hidden and gadgets cannot be used |
-| `menu.page-size` | `8` | Cosmetics per menu page |
+| `menu.layout` | `catalog` | Resource-pack grid; use `classic` for regular forms |
+| `menu.player-preview` | `false` | Show a live player model beside the catalog grid |
+| `menu.page-size` | `8` | Cosmetics per classic menu page; the catalog shows 40 |
 
 ### `cosmetics/`: one file per type
 
@@ -175,6 +256,7 @@ resource-pack/
 ├── manifest.json
 ├── models/entity/nkcosmetics/hats/royal_crown.geo.json
 ├── textures/nkcosmetics/hats/royal_crown.png
+├── textures/nkcosmetics/icons/royal_crown.png        (optional menu icon, named after the cosmetic id)
 ├── entity/nkcosmetics/red_balloon.entity.json        (balloons only)
 └── animations/nkcosmetics/balloon.animation.json     (balloons only)
 ```
@@ -190,6 +272,7 @@ cosmetics:
     description: "A golden crown set with a ruby and a sapphire."
     geometry: "geometry.nk.royal_crown"
     texture: "textures/nkcosmetics/hats/royal_crown"   # no .png
+    icon: "textures/nkcosmetics/icons/royal_crown"     # optional, this is the default; no .png
     permission: "nkcosmetics.hat.royal_crown"          # optional, this is the default
     rarity: legendary                                  # common, uncommon, rare, epic, legendary, mythic
     enabled: true
@@ -383,7 +466,7 @@ must be registered before players join for clients to know its entity type.
 
 ### Events
 
-All events are in `ninjaknights\cosmetics\event` and are cancellable. Each carries a `ChangeCause`
+Events are in `ninjaknights\cosmetics\event`. The cosmetic events carry a `ChangeCause`
 (`PLAYER`, `ADMIN`, `API`, `RESTORE`, `ACCESS_LOST`, `WORLD`).
 
 | Event | When | Cancelling |
@@ -392,6 +475,8 @@ All events are in `ninjaknights\cosmetics\event` and are cancellable. Each carri
 | `CosmeticUnequipEvent` | Before a cosmetic is unequipped | Keeps it equipped, **except** for forced causes (`ACCESS_LOST`, `WORLD`), which always happen |
 | `CosmeticUnlockEvent` | Before an unlock is granted (player may be offline; see `getOnlinePlayer()`) | Prevents the grant |
 | `CosmeticRevokeEvent` | Before a granted unlock is removed | Keeps the unlock |
+| `WardrobeEnterEvent` | When a player walks into a [wardrobe zone](#wardrobe-zones), before anything changes | Keeps the player out until they walk in again |
+| `WardrobeExitEvent` | After a player has left a wardrobe zone, for any reason | Not cancellable |
 
 ## Compatibility and known limitations
 

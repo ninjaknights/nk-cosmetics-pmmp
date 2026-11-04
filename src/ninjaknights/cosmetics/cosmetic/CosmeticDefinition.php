@@ -17,6 +17,7 @@ final class CosmeticDefinition{
 
 	/**
 	 * @param array<string, mixed> $settings renderer-specific settings, already validated
+	 * @param string|null          $icon     menu icon path in the resource pack; null uses the category's icon
 	 */
 	public function __construct(
 		public readonly string $id,
@@ -32,7 +33,8 @@ final class CosmeticDefinition{
 		public readonly bool $defaultUnlocked,
 		public readonly bool $permissionUnlocks,
 		public readonly array $settings,
-		public readonly string $source
+		public readonly string $source,
+		public readonly ?string $icon = null
 	){}
 
 	public function getSetting(string $key, mixed $default = null) : mixed{

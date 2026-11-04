@@ -31,13 +31,40 @@ final class CosmeticManager{
 	private array $renderers = [];
 	/** @var list<\Closure(Player) : void> */
 	private array $viewerHooks = [];
+	/** @var \WeakMap<Player, true> players whose gadget is paused */
+	private \WeakMap $gadgetsSuppressed;
 
 	public function __construct(
 		private CosmeticRegistry $registry,
 		private SessionManager $sessions,
 		private PluginSettings $settings,
 		private \Logger $logger
-	){}
+	){
+		$this->gadgetsSuppressed = new \WeakMap();
+	}
+
+	/**
+	 * Pauses or resumes a player's gadget, including its hotbar tool, without unequipping it. Used
+	 * during a wardrobe zone visit, where gadgets have no use.
+	 */
+	public function setGadgetsSuppressed(Player $player, bool $suppressed) : void{
+		if($suppressed){
+			$this->gadgetsSuppressed[$player] = true;
+		}else{
+			unset($this->gadgetsSuppressed[$player]);
+		}
+		if($player->isConnected()){
+			$this->refreshVisibility($player);
+		}
+	}
+
+	public function areGadgetsSuppressed(Player $player) : bool{
+		return isset($this->gadgetsSuppressed[$player]);
+	}
+
+	private function shouldShow(Player $player, CosmeticCategory $category) : bool{
+		return $this->isVisible($player) && ($category !== CosmeticCategory::GADGET || !$this->areGadgetsSuppressed($player));
+	}
 
 	public function setSettings(PluginSettings $settings) : void{
 		$this->settings = $settings;
@@ -144,7 +171,7 @@ final class CosmeticManager{
 		}
 
 		$session->setEquipped($definition->category, $definition->id);
-		if($this->isVisible($player)){
+		if($this->shouldShow($player, $definition->category)){
 			$this->renderers[$definition->category->value]->show($player, $definition);
 		}
 		return EquipResult::SUCCESS;
@@ -240,10 +267,10 @@ final class CosmeticManager{
 	 * Shows or hides every equipped cosmetic according to isVisible(). Equipment is unchanged.
 	 */
 	public function refreshVisibility(Player $player) : void{
-		$visible = $this->isVisible($player);
 		foreach($this->renderers as $categoryValue => $renderer){
-			$definition = $this->getEquipped($player, CosmeticCategory::from($categoryValue));
-			if($visible && $definition !== null && $this->canUse($player, $definition)){
+			$category = CosmeticCategory::from($categoryValue);
+			$definition = $this->getEquipped($player, $category);
+			if($this->shouldShow($player, $category) && $definition !== null && $this->canUse($player, $definition)){
 				$renderer->show($player, $definition);
 			}else{
 				$renderer->hide($player);

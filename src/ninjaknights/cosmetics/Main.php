@@ -8,6 +8,7 @@ use ninjaknights\cosmetics\api\NKCosmeticsAPI;
 use ninjaknights\cosmetics\builtin\BuiltinCatalogs;
 use ninjaknights\cosmetics\command\AdminCommand;
 use ninjaknights\cosmetics\command\CosmeticsCommand;
+use ninjaknights\cosmetics\command\WardrobeZoneCommand;
 use ninjaknights\cosmetics\entity\CustomEntityIdentifiers;
 use ninjaknights\cosmetics\geometry\GeometryFile;
 use ninjaknights\cosmetics\geometry\GeometryModel;
@@ -40,6 +41,8 @@ use ninjaknights\cosmetics\skin\SkinGeometryManager;
 use ninjaknights\cosmetics\storage\CosmeticStorage;
 use ninjaknights\cosmetics\storage\SqliteStorage;
 use ninjaknights\cosmetics\storage\StorageException;
+use ninjaknights\cosmetics\wardrobe\WardrobeSessionManager;
+use ninjaknights\cosmetics\wardrobe\WardrobeZoneManager;
 use pocketmine\network\mcpe\convert\TypeConverter;
 use pocketmine\player\Player;
 use pocketmine\plugin\PluginBase;
@@ -75,6 +78,8 @@ final class Main extends PluginBase{
 	private PreservingSkinAdapter $skinAdapter;
 	private SkinGeometryManager $skins;
 	private MenuManager $menus;
+	private WardrobeZoneManager $wardrobes;
+	private WardrobeSessionManager $wardrobeVisits;
 	private NKCosmeticsAPI $api;
 	/** @var list<SkinAttachedRenderer> */
 	private array $skinRenderers = [];
@@ -101,6 +106,7 @@ final class Main extends PluginBase{
 		}
 
 		$this->saveDefaultConfig();
+		$this->saveResource("wardrobes.yml");
 		foreach(CosmeticCategory::ordered() as $category){
 			$this->saveResource(CosmeticFiles::DIRECTORY . "/" . CosmeticFiles::fileName($category));
 		}
@@ -160,7 +166,19 @@ final class Main extends PluginBase{
 			$this->getLogger()->info(TF::clean($line));
 		}
 
-		$this->menus = new MenuManager($this->cosmetics, $this->settings);
+		$this->menus = new MenuManager($this->cosmetics, $this->settings, $this->getScheduler());
+		$this->wardrobeVisits = new WardrobeSessionManager(
+			$this, $this->cosmetics,
+			fn(Player $player) => $this->menus->openMain($player),
+			fn() : int => $this->getServer()->getTick()
+		);
+		$this->wardrobes = new WardrobeZoneManager(
+			Path::join($this->getDataFolder(), "wardrobes.yml"), $this->getLogger(),
+			$this->wardrobeVisits->enter(...),
+			fn(Player $player) : bool => $player->isAlive() && $player->hasPermission(CosmeticsCommand::PERMISSION) &&
+				$this->sessions->get($player) !== null && $this->cosmetics->isWorldAllowed($player) && !$this->wardrobeVisits->isInWardrobe($player)
+		);
+		$this->wardrobes->reload();
 		$this->api = new NKCosmeticsAPI($this->cosmetics, $this->assets);
 
 		$visibility = new SkinVisibilityListener($this->cosmetics, $this->skins);
@@ -175,10 +193,11 @@ final class Main extends PluginBase{
 		$pluginManager->registerEvents(new PlayerListener($this, $this->cosmetics, $this->skins), $this);
 		$pluginManager->registerEvents($visibility, $this);
 		$pluginManager->registerEvents(new GadgetListener($this->gadgets), $this);
+		$pluginManager->registerEvents($this->wardrobeVisits, $this);
 
 		$this->getServer()->getCommandMap()->registerAll("nkcosmetics", [
 			new CosmeticsCommand($this, $this->cosmetics, $this->menus, $this->gadgets),
-			new AdminCommand($this, $this->cosmetics)
+			new AdminCommand($this, $this->cosmetics, new WardrobeZoneCommand($this->wardrobes, $this->wardrobeVisits->endAll(...)))
 		]);
 
 		$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
@@ -190,6 +209,14 @@ final class Main extends PluginBase{
 				$renderer->updateVisibility();
 			}
 		}), 10);
+		$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
+			foreach($this->getServer()->getOnlinePlayers() as $player){
+				$this->wardrobes->tickPlayer($player, $this->getServer()->getTick());
+			}
+		}), 5);
+		$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
+			$this->wardrobeVisits->tick($this->getServer()->getTick());
+		}), 5);
 		$this->getScheduler()->scheduleRepeatingTask(new ClosureTask(function() : void{
 			$this->sessions->saveAll();
 		}), $this->settings->getAutosaveSeconds() * 20);
@@ -203,6 +230,7 @@ final class Main extends PluginBase{
 			return;
 		}
 		$this->ready = false;
+		$this->wardrobeVisits->endAll();
 		$this->particles->clear();
 		$online = $this->getServer()->getOnlinePlayers();
 		foreach($this->followerRenderers as $renderer){
@@ -420,7 +448,7 @@ final class Main extends PluginBase{
 	}
 
 	/**
-	 * /nkcosmetics reload: re-reads config.yml, source assets and the cosmetics/*.yml files, then
+	 * /nkcosmetics reload: re-reads config.yml, wardrobes.yml, source assets and cosmetics/*.yml, then
 	 * re-applies every online player's cosmetics with the new definitions.
 	 *
 	 * @return list<string>
@@ -438,6 +466,8 @@ final class Main extends PluginBase{
 		}
 		$this->cosmetics->setSettings($this->settings);
 		$this->menus->setSettings($this->settings);
+		$this->wardrobeVisits->endAll();
+		$lines = [...$lines, ...$this->wardrobes->reload()];
 		$this->particles->setSettings($this->settings);
 		$this->gadgets->setSettings($this->settings);
 		foreach($this->followerRenderers as $renderer){

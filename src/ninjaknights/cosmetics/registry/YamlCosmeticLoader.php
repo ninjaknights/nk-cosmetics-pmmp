@@ -36,7 +36,7 @@ final class YamlCosmeticLoader{
 	public const ID_PATTERN = '/^[a-z0-9_]{1,48}$/';
 	public const PERMISSION_PATTERN = '/^[a-zA-Z0-9_.\-]+$/';
 
-	private const COMMON_KEYS = ["type", "name", "description", "geometry", "texture", "animation", "permission", "rarity", "enabled", "unlock"];
+	private const COMMON_KEYS = ["type", "name", "description", "geometry", "texture", "icon", "animation", "permission", "rarity", "enabled", "unlock"];
 	private const SKIN_KEYS = ["offset", "slim-offset", "replace-slot", "strip-bones"];
 	private const CATEGORY_KEYS = [
 		"hat" => ["hide-with-helmet"],
@@ -230,8 +230,28 @@ final class YamlCosmeticLoader{
 			$defaultUnlocked,
 			$permissionUnlocks,
 			$settings,
-			$this->source
+			$this->source,
+			$this->resolveIcon($id, $entry["icon"] ?? null, $report)
 		);
+	}
+
+	/**
+	 * An icon is optional, so a bad one only warns: the menu falls back to the category's icon.
+	 */
+	private function resolveIcon(string $id, mixed $icon, LoadReport $report) : ?string{
+		if($icon === null){
+			$conventional = "textures/nkcosmetics/icons/$id";
+			return $this->assets?->hasTexture($conventional) === true ? $conventional : null;
+		}
+		if(!is_string($icon) || $icon === "" || preg_match('/\.(png|tga)$/i', $icon) === 1){
+			$report->warning($id, "'icon' must be a resource pack path without extension, e.g. textures/nkcosmetics/icons/$id; using the category icon");
+			return null;
+		}
+		if($this->assets !== null && !$this->assets->hasTexture($icon)){
+			$report->warning($id, "Icon $icon.png was not found in the resource pack; using the category icon");
+			return null;
+		}
+		return $icon;
 	}
 
 	/**

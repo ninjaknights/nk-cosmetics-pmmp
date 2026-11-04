@@ -44,5 +44,10 @@ skins:
 disabled-worlds: []
 
 menu:
-  # Cosmetics listed per page in the /cosmetics menu.
+  # catalog is a grid of cards drawn by the bundled resource pack; classic uses regular server forms.
+  # Clients must accept the resource pack to see the catalog layout.
+  layout: catalog
+  # Also show a live model of the player beside the catalog grid. Wardrobe zones already show one.
+  player-preview: false
+  # Cosmetics listed per page in the classic menu. The catalog shows 40 per page.
   page-size: 8

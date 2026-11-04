@@ -20,6 +20,7 @@ settings:
 #   name:        display name                                   (required)
 #   geometry:    model identifier in the resource pack           (required)
 #   texture:     PNG path in the resource pack, without .png     (required, at most 128x128)
+#   icon:        menu icon path, without .png                    (default textures/nkcosmetics/icons/<id>)
 #   description: text shown in the menu
 #   permission:  permission that unlocks it (default nkcosmetics.hat.<id>)
 #   rarity:      common | uncommon | rare | epic | legendary | mythic

@@ -83,6 +83,9 @@ final class GadgetRenderer implements CosmeticRendererInterface{
 	public function activate(Player $player) : bool{
 		$tick = ($this->currentTick)();
 		$definition = $this->cosmetics->getEquipped($player, CosmeticCategory::GADGET);
+		if($this->cosmetics->areGadgetsSuppressed($player)){
+			return false;
+		}
 		if(!$player->isConnected() || !$player->isAlive() || $player->isSpectator() || $definition === null || !$this->cosmetics->canUse($player, $definition) || !$this->cosmetics->isVisible($player)){
 			$player->sendMessage(TF::RED . "Equip an available gadget and enable your cosmetics in an allowed world first.");
 			return false;

@@ -21,7 +21,7 @@ use function preg_match;
 use function strtolower;
 
 /**
- * /nkcosmetics give|remove|clear|list|reload|debug
+ * /nkcosmetics give|remove|clear|list|reload|debug|wardrobe
  */
 final class AdminCommand extends Command implements PluginOwned{
 	use PluginOwnedTrait;
@@ -35,14 +35,16 @@ final class AdminCommand extends Command implements PluginOwned{
 		"clear" => ["nkcosmetics.admin.clear", "/nkcosmetics clear <player>"],
 		"list" => ["nkcosmetics.admin.list", "/nkcosmetics list [category]"],
 		"reload" => ["nkcosmetics.admin.reload", "/nkcosmetics reload"],
-		"debug" => ["nkcosmetics.admin.debug", "/nkcosmetics debug <player>"]
+		"debug" => ["nkcosmetics.admin.debug", "/nkcosmetics debug <player>"],
+		"wardrobe" => ["nkcosmetics.admin.wardrobe", "/nkcosmetics wardrobe <add|setstand|setcamera|setexit|pos1|pos2|enable|disable|info|list|remove>"]
 	];
 
 	public function __construct(
 		private Main $plugin,
-		private CosmeticManager $cosmetics
+		private CosmeticManager $cosmetics,
+		private WardrobeZoneCommand $wardrobes
 	){
-		parent::__construct("nkcosmetics", "Manage NKCosmetics", "/nkcosmetics <give|remove|clear|list|reload|debug>", ["nkc"]);
+		parent::__construct("nkcosmetics", "Manage NKCosmetics", "/nkcosmetics <give|remove|clear|list|reload|debug|wardrobe>", ["nkc"]);
 		$this->owningPlugin = $plugin;
 		$this->setPermission(self::PERMISSION_ROOT);
 	}
@@ -66,6 +68,9 @@ final class AdminCommand extends Command implements PluginOwned{
 		}
 
 		switch($sub){
+			case "wardrobe":
+				$this->wardrobes->execute($sender, array_slice($args, 1));
+				return true;
 			case "give":
 			case "remove":
 				if(count($args) !== 3 || preg_match(self::PLAYER_NAME, $args[1]) !== 1){

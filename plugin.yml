@@ -31,6 +31,9 @@ permissions:
   nkcosmetics.admin.debug:
     description: Dump a player's composed skin with /nkcosmetics debug
     default: op
+  nkcosmetics.admin.wardrobe:
+    description: Set up wardrobe zones with /nkcosmetics wardrobe
+    default: op
   nkcosmetics.all:
     description: Use every cosmetic, regardless of unlocks
     default: op

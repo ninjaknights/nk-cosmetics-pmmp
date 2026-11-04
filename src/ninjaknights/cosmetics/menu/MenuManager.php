@@ -18,6 +18,7 @@ use ninjaknights\cosmetics\manager\EquipResult;
 use ninjaknights\cosmetics\PluginSettings;
 use ninjaknights\cosmetics\storage\PlayerRecord;
 use pocketmine\player\Player;
+use pocketmine\scheduler\TaskScheduler;
 use pocketmine\utils\TextFormat as TF;
 use function array_slice;
 use function ceil;
@@ -30,17 +31,36 @@ use function usort;
  * The /cosmetics forms: main menu, paginated category lists, cosmetic details and settings.
  */
 final class MenuManager{
+	private CatalogMenu $catalog;
 
 	public function __construct(
 		private CosmeticManager $cosmetics,
-		private PluginSettings $settings
-	){}
+		private PluginSettings $settings,
+		?TaskScheduler $scheduler = null
+	){
+		$this->catalog = new CatalogMenu(
+			$cosmetics,
+			$settings,
+			$scheduler,
+			fn(Player $player) => $this->openSettings($player),
+			fn(Player $player, CosmeticDefinition $definition, int $page) => $this->openDetails($player, $definition, $page)
+		);
+	}
 
 	public function setSettings(PluginSettings $settings) : void{
 		$this->settings = $settings;
+		$this->catalog->setSettings($settings);
 	}
 
 	public function openMain(Player $player) : void{
+		if($this->settings->isCatalogMenu()){
+			foreach(CosmeticCategory::ordered() as $category){
+				if($this->cosmetics->isCategoryAvailable($category)){
+					$this->catalog->open($player, $category);
+					return;
+				}
+			}
+		}
 		$categories = [];
 		$options = [];
 		foreach(CosmeticCategory::ordered() as $category){
@@ -71,7 +91,7 @@ final class MenuManager{
 					$this->openCategory($player, $categories[$selected], 0);
 				}elseif($selected === count($categories)){
 					$this->openSettings($player);
-				}else{
+				}elseif($selected === count($categories) + 1){
 					$count = $this->cosmetics->clear($player, ChangeCause::PLAYER);
 					$player->sendMessage(TF::GREEN . "Unequipped $count cosmetic" . ($count === 1 ? "" : "s") . ".");
 				}
@@ -92,6 +112,10 @@ final class MenuManager{
 	}
 
 	public function openCategory(Player $player, CosmeticCategory $category, int $page) : void{
+		if($this->settings->isCatalogMenu() && $this->cosmetics->isCategoryAvailable($category)){
+			$this->catalog->open($player, $category, $page);
+			return;
+		}
 		$all = $this->listCategory($player, $category);
 		$pageSize = $this->settings->getMenuPageSize();
 		$pages = max(1, (int) ceil(count($all) / $pageSize));

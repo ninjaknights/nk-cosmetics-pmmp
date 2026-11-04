@@ -236,6 +236,14 @@ final class PluginSettings{
 		return max(1, min(20, $this->int("menu.page-size", 8, 1, 20)));
 	}
 
+	public function isCatalogMenu() : bool{
+		return $this->string("menu.layout", "catalog") !== "classic";
+	}
+
+	public function isPlayerPreviewShown() : bool{
+		return $this->bool("menu.player-preview", false);
+	}
+
 	public function getGadgetCooldownSeconds(string $id, int $default) : int{
 		return $this->int("builtin.gadgets.$id.cooldown-seconds", $default, 1, 300);
 	}

@@ -1,0 +1,518 @@
+{
+  "namespace": "nk_catalog",
+
+  "form_text_label": {
+    "type": "label",
+    "text": "#form_text",
+    "layer": 5,
+    "shadow": true,
+    "bindings": [
+      { "binding_name": "#form_text", "binding_condition": "always" }
+    ]
+  },
+
+  "button_label": {
+    "type": "label",
+    "text": "#text",
+    "size": [ "100% - 4px", 10 ],
+    "font_scale_factor": 0.85,
+    "layer": 5,
+    "shadow": true,
+    "text_alignment": "center",
+    "bindings": [
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "form_buttons",
+        "binding_name": "#form_button_text",
+        "binding_condition": "always",
+        "binding_name_override": "#text"
+      }
+    ]
+  },
+
+  "text_button@common.button": {
+    "$index|default": 0,
+    "size": [ "100%", "100%" ],
+    "$pressed_button_name": "button.form_button_click",
+    "collection_index": "$index",
+    "bindings": [
+      { "binding_type": "collection_details", "binding_collection_name": "form_buttons" },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "form_buttons",
+        "binding_name": "#form_button_text",
+        "binding_condition": "always"
+      },
+      {
+        "binding_type": "view",
+        "source_property_name": "(not (#form_button_text = ''))",
+        "target_property_name": "#visible"
+      },
+      {
+        "binding_type": "view",
+        "source_property_name": "((#form_button_text - '§8') = #form_button_text)",
+        "target_property_name": "#enabled"
+      }
+    ],
+    "controls": [
+      { "default": { "type": "image", "texture": "textures/nkcosmetics/ui/card", "size": [ "100%", "100%" ], "layer": 2 } },
+      { "hover": { "type": "image", "texture": "textures/nkcosmetics/ui/hover", "size": [ "100%", "100%" ], "layer": 2 } },
+      { "pressed": { "type": "image", "texture": "textures/nkcosmetics/ui/pressed", "size": [ "100%", "100%" ], "layer": 2 } },
+      {
+        "selected": {
+          "type": "image",
+          "texture": "textures/nkcosmetics/ui/tab_selected",
+          "size": [ "100%", "100%" ],
+          "layer": 3,
+          "bindings": [
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "form_buttons",
+              "binding_name": "#form_button_text",
+              "binding_condition": "always"
+            },
+            {
+              "binding_type": "view",
+              "source_property_name": "(not ((#form_button_text - '§r§l§r') = #form_button_text))",
+              "target_property_name": "#visible"
+            }
+          ]
+        }
+      },
+      { "caption@nk_catalog.button_label": {} }
+    ]
+  },
+
+  "page_label@common.button": {
+    "$index|default": 0,
+    "size": [ "100%", "100%" ],
+    "$pressed_button_name": "button.form_button_click",
+    "$focus_enabled": false,
+    "enabled": false,
+    "collection_index": "$index",
+    "controls": [
+      { "default": { "type": "panel" } },
+      { "hover": { "type": "panel" } },
+      { "pressed": { "type": "panel" } },
+      { "caption@nk_catalog.button_label": {} }
+    ]
+  },
+
+  "card@common.button": {
+    "$index|default": 0,
+    "size": [ "25% - 3px", "100% - 3px" ],
+    "anchor_from": "top_left",
+    "anchor_to": "top_left",
+    "$pressed_button_name": "button.form_button_click",
+    "collection_index": "$index",
+    "bindings": [
+      { "binding_type": "collection_details", "binding_collection_name": "form_buttons" },
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "form_buttons",
+        "binding_name": "#form_button_text",
+        "binding_condition": "always"
+      },
+      {
+        "binding_type": "view",
+        "source_property_name": "(not (#form_button_text = ''))",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      { "default": { "type": "image", "texture": "textures/nkcosmetics/ui/card", "size": [ "100%", "100%" ], "layer": 2 } },
+      { "hover": { "type": "image", "texture": "textures/nkcosmetics/ui/hover", "size": [ "100%", "100%" ], "layer": 2 } },
+      { "pressed": { "type": "image", "texture": "textures/nkcosmetics/ui/pressed", "size": [ "100%", "100%" ], "layer": 2 } },
+      {
+        "icon": {
+          "type": "image",
+          "size": [ "100% - 14px", "100% - 28px" ],
+          "layer": 3,
+          "keep_ratio": true,
+          "anchor_from": "top_middle",
+          "anchor_to": "top_middle",
+          "offset": [ 0, 5 ],
+          "bindings": [
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "form_buttons",
+              "binding_name": "#form_button_texture",
+              "binding_condition": "always",
+              "binding_name_override": "#texture"
+            },
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "form_buttons",
+              "binding_name": "#form_button_texture_file_system",
+              "binding_condition": "always",
+              "binding_name_override": "#texture_file_system"
+            }
+          ]
+        }
+      },
+      {
+        "name_strip": {
+          "type": "image",
+          "texture": "textures/nkcosmetics/ui/label",
+          "size": [ "100% - 10px", 15 ],
+          "layer": 4,
+          "anchor_from": "bottom_middle",
+          "anchor_to": "bottom_middle",
+          "offset": [ 0, -5 ],
+          "clips_children": true,
+          "controls": [
+            { "caption@nk_catalog.button_label": { "layer": 2 } }
+          ]
+        }
+      },
+      {
+        "equipped_badge": {
+          "type": "image",
+          "texture": "textures/nkcosmetics/ui/badge",
+          "size": [ 46, 12 ],
+          "layer": 6,
+          "anchor_from": "top_right",
+          "anchor_to": "top_right",
+          "offset": [ -4, 4 ],
+          "controls": [
+            {
+              "caption": {
+                "type": "label",
+                "text": "EQUIPPED",
+                "size": [ "100%", 8 ],
+                "font_scale_factor": 0.65,
+                "layer": 1,
+                "shadow": true,
+                "text_alignment": "center"
+              }
+            }
+          ],
+          "bindings": [
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "form_buttons",
+              "binding_name": "#form_button_text",
+              "binding_condition": "always"
+            },
+            {
+              "binding_type": "view",
+              "source_property_name": "(not ((#form_button_text - '§r§l§r') = #form_button_text))",
+              "target_property_name": "#visible"
+            }
+          ]
+        }
+      },
+      {
+        "lock": {
+          "type": "image",
+          "texture": "textures/nkcosmetics/ui/lock",
+          "size": [ 7, 8 ],
+          "layer": 6,
+          "anchor_from": "top_right",
+          "anchor_to": "top_right",
+          "offset": [ -6, 5 ],
+          "bindings": [
+            {
+              "binding_type": "collection",
+              "binding_collection_name": "form_buttons",
+              "binding_name": "#form_button_text",
+              "binding_condition": "always"
+            },
+            {
+              "binding_type": "view",
+              "source_property_name": "(not ((#form_button_text - '§r§o§r') = #form_button_text))",
+              "target_property_name": "#visible"
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "row": {
+    "type": "panel",
+    "size": [ "100%", 76 ],
+    "collection_index": "$a",
+    "bindings": [
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "form_buttons",
+        "binding_name": "#form_button_text",
+        "binding_condition": "always"
+      },
+      {
+        "binding_type": "view",
+        "source_property_name": "(not (#form_button_text = ''))",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "cells": {
+          "type": "collection_panel",
+          "collection_name": "form_buttons",
+          "size": [ "100%", "100%" ],
+          "controls": [
+            { "first@nk_catalog.card": { "$index": "$a", "offset": [ "0%", 0 ] } },
+            { "second@nk_catalog.card": { "$index": "$b", "offset": [ "25%", 0 ] } },
+            { "third@nk_catalog.card": { "$index": "$c", "offset": [ "50%", 0 ] } },
+            { "fourth@nk_catalog.card": { "$index": "$d", "offset": [ "75%", 0 ] } }
+          ]
+        }
+      }
+    ]
+  },
+
+  "paging": {
+    "type": "panel",
+    "size": [ "100%", 24 ],
+    "collection_index": 12,
+    "bindings": [
+      {
+        "binding_type": "collection",
+        "binding_collection_name": "form_buttons",
+        "binding_name": "#form_button_text",
+        "binding_condition": "always"
+      },
+      {
+        "binding_type": "view",
+        "source_property_name": "(not (#form_button_text = ''))",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "cells": {
+          "type": "stack_panel",
+          "orientation": "horizontal",
+          "collection_name": "form_buttons",
+          "size": [ "100% - 3px", 20 ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "controls": [
+            { "previous@nk_catalog.text_button": { "$index": 10, "size": [ "30%", "100%" ] } },
+            { "page@nk_catalog.page_label": { "$index": 12, "size": [ "40%", "100%" ] } },
+            { "next@nk_catalog.text_button": { "$index": 11, "size": [ "30%", "100%" ] } }
+          ]
+        }
+      }
+    ]
+  },
+
+  "items": {
+    "type": "stack_panel",
+    "orientation": "vertical",
+    "collection_name": "form_buttons",
+    "size": [ "100% - 4px", "100%c" ],
+    "controls": [
+      { "row_0@nk_catalog.row": { "$a": 13, "$b": 14, "$c": 15, "$d": 16 } },
+      { "row_1@nk_catalog.row": { "$a": 17, "$b": 18, "$c": 19, "$d": 20 } },
+      { "row_2@nk_catalog.row": { "$a": 21, "$b": 22, "$c": 23, "$d": 24 } },
+      { "row_3@nk_catalog.row": { "$a": 25, "$b": 26, "$c": 27, "$d": 28 } },
+      { "row_4@nk_catalog.row": { "$a": 29, "$b": 30, "$c": 31, "$d": 32 } },
+      { "row_5@nk_catalog.row": { "$a": 33, "$b": 34, "$c": 35, "$d": 36 } },
+      { "row_6@nk_catalog.row": { "$a": 37, "$b": 38, "$c": 39, "$d": 40 } },
+      { "row_7@nk_catalog.row": { "$a": 41, "$b": 42, "$c": 43, "$d": 44 } },
+      { "row_8@nk_catalog.row": { "$a": 45, "$b": 46, "$c": 47, "$d": 48 } },
+      { "row_9@nk_catalog.row": { "$a": 49, "$b": 50, "$c": 51, "$d": 52 } },
+      { "paging@nk_catalog.paging": {} }
+    ]
+  },
+
+  "tab_gap": { "type": "panel", "size": [ 2, "100%" ] },
+
+  "catalog": {
+    "type": "panel",
+    "controls": [
+      { "frame": { "type": "image", "texture": "textures/nkcosmetics/ui/panel", "size": [ "100%", "100%" ], "layer": 1 } },
+      {
+        "header": {
+          "type": "image",
+          "texture": "textures/nkcosmetics/ui/inset",
+          "size": [ "100% - 10px", 26 ],
+          "layer": 2,
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "offset": [ 5, 5 ],
+          "controls": [
+            {
+              "title@nk_catalog.form_text_label": {
+                "size": [ "100% - 160px", 10 ],
+                "anchor_from": "left_middle",
+                "anchor_to": "left_middle",
+                "offset": [ 8, 0 ]
+              }
+            },
+            {
+              "actions": {
+                "type": "collection_panel",
+                "collection_name": "form_buttons",
+                "size": [ 146, 20 ],
+                "anchor_from": "right_middle",
+                "anchor_to": "right_middle",
+                "offset": [ -3, 0 ],
+                "controls": [
+                  {
+                    "row": {
+                      "type": "stack_panel",
+                      "orientation": "horizontal",
+                      "collection_name": "form_buttons",
+                      "size": [ "100%", "100%" ],
+                      "controls": [
+                        { "clear@nk_catalog.text_button": { "$index": 8, "size": [ 68, "100%" ] } },
+                        { "gap_1@nk_catalog.tab_gap": {} },
+                        { "settings@nk_catalog.text_button": { "$index": 7, "size": [ 52, "100%" ] } },
+                        { "gap_2@nk_catalog.tab_gap": {} },
+                        { "close@nk_catalog.text_button": { "$index": 9, "size": [ 20, "100%" ] } }
+                      ]
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "tabs": {
+          "type": "collection_panel",
+          "collection_name": "form_buttons",
+          "size": [ "100% - 10px", 20 ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "offset": [ 5, 34 ],
+          "controls": [
+            {
+              "row": {
+                "type": "stack_panel",
+                "orientation": "horizontal",
+                "collection_name": "form_buttons",
+                "size": [ "100%", "100%" ],
+                "controls": [
+                  { "hat@nk_catalog.text_button": { "$index": 0, "size": [ "14.285% - 2px", "100%" ] } },
+                  { "gap_0@nk_catalog.tab_gap": {} },
+                  { "back@nk_catalog.text_button": { "$index": 1, "size": [ "14.285% - 2px", "100%" ] } },
+                  { "gap_1@nk_catalog.tab_gap": {} },
+                  { "offhand@nk_catalog.text_button": { "$index": 2, "size": [ "14.285% - 2px", "100%" ] } },
+                  { "gap_2@nk_catalog.tab_gap": {} },
+                  { "balloon@nk_catalog.text_button": { "$index": 3, "size": [ "14.285% - 2px", "100%" ] } },
+                  { "gap_3@nk_catalog.tab_gap": {} },
+                  { "pet@nk_catalog.text_button": { "$index": 4, "size": [ "14.285% - 2px", "100%" ] } },
+                  { "gap_4@nk_catalog.tab_gap": {} },
+                  { "particle@nk_catalog.text_button": { "$index": 5, "size": [ "14.285% - 2px", "100%" ] } },
+                  { "gap_5@nk_catalog.tab_gap": {} },
+                  { "gadget@nk_catalog.text_button": { "$index": 6, "size": [ "14.285% - 2px", "100%" ] } }
+                ]
+              }
+            }
+          ]
+        }
+      },
+      {
+        "grid_frame": {
+          "type": "image",
+          "texture": "textures/nkcosmetics/ui/inset",
+          "size": [ "100% - 10px", "100% - 62px" ],
+          "layer": 2,
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "offset": [ 5, 57 ]
+        }
+      },
+      {
+        "item_scroller@common.scrolling_panel": {
+          "size": [ "100% - 16px", "100% - 68px" ],
+          "$show_background": false,
+          "$scrolling_content": "nk_catalog.items",
+          "$scroll_size": [ 3, "100% - 2px" ],
+          "$scrolling_pane_size": [ "100% - 4px", "100% - 2px" ],
+          "$scrolling_pane_offset": [ 0, 0 ],
+          "$scroll_bar_right_padding_size": [ 0, 0 ],
+          "layer": 3,
+          "anchor_from": "top_left",
+          "anchor_to": "top_left",
+          "offset": [ 8, 60 ]
+        }
+      }
+    ]
+  },
+
+  "player_preview": {
+    "type": "panel",
+    "controls": [
+      { "frame": { "type": "image", "texture": "textures/nkcosmetics/ui/panel", "size": [ "100%", "100%" ], "layer": 1 } },
+      { "inner": { "type": "image", "texture": "textures/nkcosmetics/ui/inset", "size": [ "100% - 10px", "100% - 10px" ], "layer": 2 } },
+      {
+        "viewer": {
+          "type": "panel",
+          "size": [ "100% - 20px", "100% - 20px" ],
+          "clips_children": true,
+          "controls": [
+            {
+              "player": {
+                "type": "custom",
+                "renderer": "live_player_renderer",
+                "size": [ "72%", "64%" ],
+                "max_size": [ 90, 90 ],
+                "property_bag": { "#look_at_cursor": false },
+                "layer": 4,
+                "anchor_from": "center",
+                "anchor_to": "center",
+                "offset": [ 0, 8 ]
+              }
+            }
+          ]
+        }
+      }
+    ]
+  },
+
+  "root": {
+    "type": "panel",
+    "size": [ "100% - 12px", "100% - 12px" ],
+    "max_size": [ 660, 382 ],
+    "layer": 10,
+    "bindings": [
+      { "binding_name": "#title_text", "binding_condition": "always" },
+      {
+        "binding_type": "view",
+        "source_property_name": "(#title_text = 'NK Cosmetics')",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      { "catalog@nk_catalog.catalog": { "size": [ "100%", "100%" ] } }
+    ]
+  },
+
+  "root_with_preview": {
+    "type": "panel",
+    "size": [ "100% - 12px", "100% - 12px" ],
+    "max_size": [ 660, 382 ],
+    "layer": 10,
+    "bindings": [
+      { "binding_name": "#title_text", "binding_condition": "always" },
+      {
+        "binding_type": "view",
+        "source_property_name": "(#title_text = 'NK Cosmetics Preview')",
+        "target_property_name": "#visible"
+      }
+    ],
+    "controls": [
+      {
+        "preview@nk_catalog.player_preview": {
+          "size": [ "24%", "100%" ],
+          "anchor_from": "top_left",
+          "anchor_to": "top_left"
+        }
+      },
+      {
+        "catalog@nk_catalog.catalog": {
+          "size": [ "76% - 4px", "100%" ],
+          "anchor_from": "top_right",
+          "anchor_to": "top_right"
+        }
+      }
+    ]
+  }
+}
