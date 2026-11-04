@@ -1,61 +1,57 @@
-# Managed by BedrockNexus Plugins. Builds every branch push and uploads the
-# "plugin-package" artifact; BedrockNexus publishes approved releases.
+# Copy into the plugin repository. Hub replaces NKCosmetics on installation.
 name: BedrockNexus Publish
 
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - "**"
+    branches: ['**']
   pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: read
 
-concurrency:
-  group: bedrocknexus-publish-${{ github.event_name }}-${{ github.ref }}
-  cancel-in-progress: true
-
 jobs:
   build:
-    name: Build plugin
     runs-on: ubuntu-latest
     timeout-minutes: 20
     defaults:
       run:
         shell: bash
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v4
+      - name: Check out plugin source
+        uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           persist-credentials: false
 
       - name: Set up PHP for Axolotl-PM 5
         uses: axolotl-pm/setup-php-action@b8c3f9add4f2ad4a5e2624a1112aba899ee8db0e # 1.0.0
         with:
-          php-version: "8.4"
-          install-path: "../bin"
-          pm-version-major: "5"
+          php-version: '8.4'
+          install-path: ../bin
+          pm-version-major: '5'
 
       - name: Check PHP syntax
-        run: find src -name '*.php' -print0 | xargs -0 -n1 php -l
+        run: find src -name '*.php' -print0 | xargs -0 -r -n1 php -l
 
-      - name: Download Pharynx
+      - name: Build with DevTools
+        id: build
+        uses: NhanAZ/DevTools@3f5752b32da49bfd1e5c28bad304d110a42f76ff # v2.0.2
+        with:
+          project: .
+          output: build
+          prepare-dependencies: 'false'
+
+      - name: Stage the plugin file
         env:
-          PHARYNX_URL: https://github.com/BedrockNexus/pharynx/releases/download/0.4.1-bedrocknexus.1/pharynx.phar
-          PHARYNX_SHA256: db60e4e308ff4f60c212c08aab17019bc15967634b19103097b6381543748605
+          SOURCE_PHAR: ${{ steps.build.outputs.phar }}
+          OUTPUT_PHAR: 'dist/NKCosmetics.phar'
         run: |
-          curl -fsSL -o "$RUNNER_TEMP/pharynx.phar" "$PHARYNX_URL"
-          echo "$PHARYNX_SHA256  $RUNNER_TEMP/pharynx.phar" | sha256sum -c -
+          mkdir -p dist
+          cp -- "$SOURCE_PHAR" "$OUTPUT_PHAR"
 
-      # With a composer.json, Pharynx runs composer install and bundles the
-      # dependencies under the plugin's namespace, leaving out the server.
-      - name: Build Phar
-        run: php "$RUNNER_TEMP/pharynx.phar" -i . -p="dist/NKCosmetics.phar"
-
-      - name: Upload plugin for BedrockNexus
-        uses: actions/upload-artifact@v4
+      - name: Upload plugin for build selection
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: plugin-package
-          path: dist/NKCosmetics.phar
+          path: 'dist/NKCosmetics.phar'
           if-no-files-found: error
