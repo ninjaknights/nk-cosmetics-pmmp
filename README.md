@@ -44,7 +44,7 @@ tool, see [Gadgets](#gadgets)), have no collision and deal no damage.
 - PocketMine-MP 5 or Axolotl-PM 5 (tested on Axolotl-PM 5.51.0, Bedrock 1.26.60).
 - PHP extensions `gd`, `sqlite3`, `zip` and `yaml`. The official PocketMine/Axolotl PHP binaries
   include all of them.
-- No other plugins. The forms library (pmforms) is bundled inside the PHAR.
+- No other plugins or libraries.
 
 ## Installation
 
@@ -529,6 +529,4 @@ resources/resource-pack/  sample resource pack (crown, wings, staff, balloon)
 
 ## License
 
-NKCosmetics is licensed under the GNU General Public License v3.0 only (`GPL-3.0-only`). The bundled
-[pmforms](https://github.com/dktapps-pm-pl/pmforms) library is LGPL-3.0; its license is included in
-the PHAR under `licenses/`.
+NKCosmetics is licensed under the GNU General Public License v3.0 only (`GPL-3.0-only`).

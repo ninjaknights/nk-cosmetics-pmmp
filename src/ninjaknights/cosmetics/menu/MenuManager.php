@@ -4,17 +4,14 @@ declare(strict_types=1);
 
 namespace ninjaknights\cosmetics\menu;
 
-use dktapps\pmforms\CustomForm;
-use dktapps\pmforms\CustomFormResponse;
-use dktapps\pmforms\element\Label;
-use dktapps\pmforms\element\Toggle;
-use dktapps\pmforms\MenuForm;
-use dktapps\pmforms\MenuOption;
 use ninjaknights\cosmetics\cosmetic\CosmeticCategory;
 use ninjaknights\cosmetics\cosmetic\CosmeticDefinition;
 use ninjaknights\cosmetics\event\ChangeCause;
 use ninjaknights\cosmetics\manager\CosmeticManager;
 use ninjaknights\cosmetics\manager\EquipResult;
+use ninjaknights\cosmetics\menu\form\MenuForm;
+use ninjaknights\cosmetics\menu\form\MenuOption;
+use ninjaknights\cosmetics\menu\form\ToggleForm;
 use ninjaknights\cosmetics\PluginSettings;
 use ninjaknights\cosmetics\storage\PlayerRecord;
 use pocketmine\player\Player;
@@ -219,13 +216,12 @@ final class MenuManager{
 		if($session === null){
 			return;
 		}
-		$player->sendForm(new CustomForm("Cosmetic settings", [
-			new Label("info", "Hidden cosmetics stay equipped."),
-			new Toggle("own", "Show my cosmetics", $session->getPreference(PlayerRecord::PREF_SHOW_OWN)),
-			new Toggle("others", "Show other players' cosmetics", $session->getPreference(PlayerRecord::PREF_SHOW_OTHERS))
-		], function(Player $player, CustomFormResponse $response) : void{
-			$this->cosmetics->setShowOwn($player, $response->getBool("own"));
-			$this->cosmetics->setShowOthers($player, $response->getBool("others"));
+		$player->sendForm(new ToggleForm("Cosmetic settings", "Hidden cosmetics stay equipped.", [
+			"own" => ["text" => "Show my cosmetics", "default" => $session->getPreference(PlayerRecord::PREF_SHOW_OWN)],
+			"others" => ["text" => "Show other players' cosmetics", "default" => $session->getPreference(PlayerRecord::PREF_SHOW_OTHERS)]
+		], function(Player $player, array $values) : void{
+			$this->cosmetics->setShowOwn($player, $values["own"]);
+			$this->cosmetics->setShowOthers($player, $values["others"]);
 			$player->sendMessage(TF::GREEN . "Cosmetic settings saved.");
 		}));
 	}

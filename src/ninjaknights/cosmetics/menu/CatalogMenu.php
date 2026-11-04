@@ -4,14 +4,13 @@ declare(strict_types=1);
 
 namespace ninjaknights\cosmetics\menu;
 
-use dktapps\pmforms\FormIcon;
-use dktapps\pmforms\MenuForm;
-use dktapps\pmforms\MenuOption;
 use ninjaknights\cosmetics\cosmetic\CosmeticCategory;
 use ninjaknights\cosmetics\cosmetic\CosmeticDefinition;
 use ninjaknights\cosmetics\event\ChangeCause;
 use ninjaknights\cosmetics\manager\CosmeticManager;
 use ninjaknights\cosmetics\manager\EquipResult;
+use ninjaknights\cosmetics\menu\form\MenuForm;
+use ninjaknights\cosmetics\menu\form\MenuOption;
 use ninjaknights\cosmetics\PluginSettings;
 use pocketmine\player\Player;
 use pocketmine\scheduler\ClosureTask;
@@ -206,8 +205,7 @@ final class CatalogMenu{
 		}else{
 			$text = self::LOCKED_MARKER . TF::GRAY . $name;
 		}
-		$icon = $item->icon ?? "textures/nkcosmetics/ui/" . $item->category->value;
-		return new MenuOption($text, new FormIcon($icon, FormIcon::IMAGE_TYPE_PATH));
+		return new MenuOption($text, $item->icon ?? "textures/nkcosmetics/ui/" . $item->category->value);
 	}
 
 	private function header(Player $player, CosmeticCategory $category, int $itemCount) : string{

@@ -143,8 +143,12 @@ final class Main extends PluginBase{
 			$this->getLogger(),
 			fn(Player $player) : bool => !$this->cosmetics->isVisible($player)
 		);
-		foreach([HatRenderer::class, BackRenderer::class, OffhandRenderer::class] as $class){
-			$renderer = new $class($this->skins, $this->assets, $this->settings, $this->getLogger());
+		$skinRenderers = [
+			new HatRenderer($this->skins, $this->assets, $this->settings, $this->getLogger()),
+			new BackRenderer($this->skins, $this->assets, $this->settings, $this->getLogger()),
+			new OffhandRenderer($this->skins, $this->assets, $this->settings, $this->getLogger())
+		];
+		foreach($skinRenderers as $renderer){
 			$this->skinRenderers[] = $renderer;
 			$this->cosmetics->registerRenderer($renderer);
 			$this->skins->registerProvider($renderer->getCategory()->value, $renderer);
