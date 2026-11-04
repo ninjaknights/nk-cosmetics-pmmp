@@ -8,7 +8,6 @@
 /tools/
 /build/
 /tests/
-/composer.lock
 /phpstan.neon
 /phpunit.xml
 

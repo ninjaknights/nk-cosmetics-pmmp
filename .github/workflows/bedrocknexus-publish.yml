@@ -39,7 +39,7 @@ jobs:
         with:
           project: .
           output: build
-          prepare-dependencies: 'false'
+          prepare-dependencies: 'true'
 
       - name: Stage the plugin file
         env:
